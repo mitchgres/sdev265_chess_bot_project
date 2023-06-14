@@ -3,12 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/chessboard-1.0.0.min.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="js/chessboard-1.0.0.min.js"></script>
     <title>Chess Interface</title>
 </head>
 <body>
-    <div class="chess-window"></div>
-    <div class="list"></div>
-    <div class="bottom"></div>
+    <div class="container">
+        <div class="chess-window zoomer">
+            <div id="board1" style="width: 300px">
+                <script src="js/script.js"></script>
+            </div>
+        </div>
+        <div class="list zoomer"></div>
+    </div>
+    <div class ="container">
+        <div class="bottom zoomer"></div>
+    </div>
+    
+    
 </body>
 </html>

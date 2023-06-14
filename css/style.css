@@ -1,0 +1,48 @@
+html
+{
+    background-color:#3c2f2f;
+}
+
+.container
+{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    height: 80%;
+    min-height: 300px;
+    margin: 20px;
+}
+
+.chess-window
+{
+    flex: 2.5;
+    background-color: #8f5c4d;
+    border-radius: 10px;
+    margin-right: 20px;
+}
+
+.list
+{
+    flex: 1;
+    min-width: 200px;
+    background-color: #b68863;
+    border-radius: 10px;
+}
+
+.bottom
+{
+    flex: 2;
+    height: 200px;
+    background-color: #f0dab7;
+    border-radius: 10px;
+}
+
+.zoomer
+{
+    transition: transform .2s ease;
+}
+
+.zoomer:hover
+{
+    transform: scale(1.01);
+}
