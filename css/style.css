@@ -15,10 +15,18 @@ html
 
 .chess-window
 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     flex: 2.5;
     background-color: #8f5c4d;
     border-radius: 10px;
     margin-right: 20px;
+}
+
+.chess-window #mainBoard
+{
+    height: 100%;
 }
 
 .list
