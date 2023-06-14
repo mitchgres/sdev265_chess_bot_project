@@ -7,21 +7,25 @@
     <link rel="stylesheet" href="css/chessboard-1.0.0.min.css">
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script src="js/chessboard-1.0.0.min.js"></script>
+    
     <title>Chess Interface</title>
 </head>
 <body>
     <div class="container">
         <div class="chess-window">
             <div id="mainboard" style="width: 300px">
-                <script src="js/mainboard.js"></script>
+                
             </div>
         </div>
         <div class="list zoomer"></div>
     </div>
     <div class ="container">
-        <div class="bottom zoomer"></div>
+        <div class="bottom zoomer">
+            <button id="setButton" class="interface flat-button">set</button>
+            <button id="clearButton" class="interface flat-button">clear</button>
+        </div>
     </div>
-    
+    <script src="js/mainboard.js"></script>
     
 </body>
 </html>
