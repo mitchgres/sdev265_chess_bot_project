@@ -1,49 +1,7 @@
-html
+html, body
 {
     background-color:#3c2f2f;
-}
-
-.container
-{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    height: 80%;
-    min-height: 300px;
-    margin: 20px;
-}
-
-.chess-window
-{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex: 2.5;
-    background-color: #8f5c4d;
-    border-radius: 10px;
-    
-}
-
-.chess-window #mainBoard
-{
-    height: 100%;
-}
-
-.list
-{
-    flex: 1;
-    min-width: 200px;
-    background-color: #b68863;
-    border-radius: 10px;
-    margin-left: 20px;
-}
-
-.bottom
-{
-    flex: 1;
-    height: 200px;
-    background-color: #f0dab7;
-    border-radius: 10px;
+    height: 99%;
 }
 
 .zoomer
@@ -53,7 +11,7 @@ html
 
 .zoomer:hover
 {
-    transform: scale(1.01);
+    background-color: #eeeeee;
 }
 
 .interface
@@ -68,5 +26,35 @@ html
     font-size: 18px;
     padding: 10px 20px;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+}
 
+.container-main {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto, auto;
+    grid-gap: 10px;
+    overflow: auto;
+    height: auto;
+}
+
+.container-side {
+    grid-column-start: 0;
+    grid-column-end: 2;
+}
+
+.chess {
+    background-color: #8f5c4d;
+    border-radius: 15px;
+    
+}
+
+.list {
+    background-color: #b68863;
+    border-radius: 15px;
+    grid-row-end: span 2;
+}
+
+.bottom {
+    background-color: #f0dab7;
+    border-radius: 15px;
 }

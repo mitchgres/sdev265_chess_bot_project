@@ -15,7 +15,6 @@ function onDragStart(source, piece, position, orientation)
 // this is called when a piece is dropped
 function onDrop(source, target, piece, newPos, oldPos, orientation)
 {
-    var audio;
     if (target != 'offboard') 
     {
         // this is called when a piece is dropped only on the board
@@ -39,7 +38,7 @@ var mainConfig =
 }
 
 // this is supposed to scale the board with the website size but idk
-var mainBoardHeight = document.querySelector('.chess-window').clientHeight;
+var mainBoardHeight = 200;//document.querySelector('.chess').clientHeight;
 
 var mainBoard = ChessBoard('mainboard', mainConfig);
 
