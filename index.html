@@ -11,20 +11,23 @@
     <title>Chess Interface</title>
 </head>
 <body>
-    <div class="container-main">
-        <div class="chess">
-            <div id="mainboard" style="width: 300px">
+    <div class="container">
+        <div class="item game">
+            <div class="item board">
+                <div id="board-object"></div>
+                <button id="setButton" class="button">Start</button>
+                <button id="clearButton" class="button">Clear</button>
             </div>
-        </div>
-        <div class="list">
             
-
         </div>
-        <div class ="container-side">
-            <div class="bottom">
-                <button id="setButton" class="zoomer interface flat-button">set</button>
-                <button id="clearButton" class="zoomer interface flat-button">clear</button>
+        <div class="item info">
+            <div class="item history history-white">white history
+
             </div>
+            <div class="item history history-black">black history
+
+            </div>
+            <div class="item log">log</div>
         </div>
     </div>
     

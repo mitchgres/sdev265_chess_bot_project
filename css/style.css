@@ -1,60 +1,103 @@
-html, body
-{
-    background-color:#3c2f2f;
-    height: 99%;
+:root {
+    --clr-dark: #3c2f2f;
+    --clr-accent: #b68863;
+    --clr-main: #8f5c4d;
+    --clr-light: #f0dab7;
 }
 
-.zoomer
-{
-    transition: transform .2s ease;
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
 
-.zoomer:hover
-{
-    background-color: #eeeeee;
+body {
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    word-spacing: 1.4px;
+    background-color: var(--clr-dark);
+    color: var(--clr-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-.interface
-{
-    background-color: #f5f5f5;
+.container {
+    width: 98%;
+    height: 98%;
+    margin: 0 auto;
+    /* border: 10px solid var(--clr-light); */
 }
 
-.flat-button
-{
-    border: none;
+.item {
+    width: 150px;
+    height: 150px;
+    padding: 1em;
+    font-weight: 700;
+    background-color: var(--clr-main);
+    color: var(--clr-light);
+    text-align: center;
+    border: 10px solid var(--clr-accent);
     border-radius: 10px;
-    font-size: 18px;
-    padding: 10px 20px;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
 }
 
-.container-main {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: auto, auto;
-    grid-gap: 10px;
-    overflow: auto;
-    height: auto;
+.container {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 1em;
 }
 
-.container-side {
-    grid-column-start: 0;
-    grid-column-end: 2;
-}
-
-.chess {
-    background-color: #8f5c4d;
-    border-radius: 15px;
+.game {
+    display: flex;
+    flex-grow: 1;
     
+    height: 100%;
+    background-color: var(--clr-dark);
 }
 
-.list {
-    background-color: #b68863;
-    border-radius: 15px;
-    grid-row-end: span 2;
+.board {
+    display: flex;
+    flex-grow: 1;
+    height: 100%;
+    border: 0;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
-.bottom {
-    background-color: #f0dab7;
-    border-radius: 15px;
+#board-object {
+    display: flex;
+    flex: 1;
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.info {
+    display: flex;
+    flex-grow: 1;
+    height: 100%;
+    justify-content: space-evenly;
+    padding: 0;
+    flex-wrap: wrap;
+    background-color: var(--clr-dark);
+}
+
+.history {
+    display: flex;
+    flex-grow: 1;
+    background-color: var(--clr-accent);
+    border: 5px solid var(--clr-accent);
+    border-radius: 0;
+    height: 50%;
+    max-width: 300px;
+}
+
+.log {
+    display: flex;
+    flex-grow: 1;
+    min-width: 250px;
+    border: 5px solid var(--clr-accent);
+    border-radius: 0;
+    height: 50%;
 }

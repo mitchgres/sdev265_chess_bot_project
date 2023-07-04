@@ -38,9 +38,26 @@ var mainConfig =
 }
 
 // this is supposed to scale the board with the website size but idk
-var mainBoardHeight = 200;//document.querySelector('.chess').clientHeight;
+var mainBoardHeight = document.querySelector('.board').clientHeight;
+var mainBoard = ChessBoard('board-object', mainConfig);
 
-var mainBoard = ChessBoard('mainboard', mainConfig);
+// more fucking scaling shit idk how this works
+function resizeBoard()
+{
+    var boardHeight = document.querySelector('.board').clientHeight;
+    mainConfig.height = boardHeight + 'px';
+
+    mainBoard.resize();
+}
+
+debug_shouldResize = true;
+
+if (debug_shouldResize)
+{
+    window.addEventListener('resize', resizeBoard);
+    window.addEventListener('load', resizeBoard);
+}
+
 
 // buttons
 function setBoardButton()
@@ -55,3 +72,4 @@ function clearBoardButton()
 
 document.getElementById('setButton').addEventListener('click', setBoardButton);
 document.getElementById('clearButton').addEventListener('click', clearBoardButton);
+
