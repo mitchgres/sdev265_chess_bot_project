@@ -1,0 +1,1 @@
+Write general idea of program. In the same file include documentation such as UML. 
