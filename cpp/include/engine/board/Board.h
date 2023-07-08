@@ -10,9 +10,9 @@ class Board {
         inline Piece* _get() const;
         // Set isn't inline because you'll have a decent amount of processing with it. 
         void _reset();
-        void _update(const Piece&);
-        void _print() const;
-        void _printRaw() const;
+        void _update(Position, Position);
+        void _printBoard() const;
+        void _printData() const;
     private:
         // Two-Dimensional Array Representation
         Piece* _board;  

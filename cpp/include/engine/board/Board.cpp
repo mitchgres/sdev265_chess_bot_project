@@ -70,8 +70,29 @@ void Board::_reset(){
 
 /// @brief Updates the board with the new location of a piece. 
 /// @param Chess Piece w/ New Location 
-void Board::_update(const Piece&){
+void Board::_update(Position old_position, Position new_position){
+    // Not passed by reference because was getting errors with == operator. 
 
+    Piece current_piece;
+    bool isPieceThere;
+
+    // Find the piece with that position. 
+    for (int i = 0; i < 32; i++){
+        if (old_position == _board[i]._getPosition()){
+            current_piece = _board[i];
+        }
+    }
+
+    // Update it's position
+    current_piece._setPosition(new_position);
+
+    // If there was another piece there update it's position to a NULL value since taken. 
+    for (int i = 0; i < 32; i++){
+        if(new_position == _board[i]._getPosition()){
+            // The piece is taken. 
+            _board[i]._setPosition(Position(-1, -1));
+        }
+    }
 }
 
 /// @brief  Prints to the standard output a visual representation of the chess board.
@@ -115,7 +136,11 @@ void Board::_printBoard() const {
                 char_representation_piece = 'R';
                 break;
         }
-        char_representation_board[x][y] = char_representation_piece;
+
+        // If the piece isn't taken then display it. 
+        if (x > 0 && y > 0){
+            char_representation_board[x][y] = char_representation_piece;
+        }
     }
 }
 
