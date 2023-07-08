@@ -83,9 +83,6 @@ void Board::_update(Position old_position, Position new_position){
         }
     }
 
-    // Update it's position
-    current_piece._setPosition(new_position);
-
     // If there was another piece there update it's position to a NULL value since taken. 
     for (int i = 0; i < 32; i++){
         if(new_position == _board[i]._getPosition()){
@@ -93,6 +90,9 @@ void Board::_update(Position old_position, Position new_position){
             _board[i]._setPosition(Position(-1, -1));
         }
     }
+
+    // Update it's position
+    current_piece._setPosition(new_position);
 }
 
 /// @brief  Prints to the standard output a visual representation of the chess board.
