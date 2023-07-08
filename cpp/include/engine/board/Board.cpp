@@ -10,6 +10,18 @@
 #include "../piece/rook/Rook.h"
 
 Board::Board(){
+    _reset();
+}
+
+Board::~Board(){
+    delete[] _board;
+}
+
+inline Piece* Board::_get() const {
+    return _board;
+}
+
+void Board::_reset(){
     // Reference Documentation for BOARD PIECE INDEX GUIDE for information on interpretation.
     short index = 0;
     
@@ -56,27 +68,59 @@ Board::Board(){
     // Board has now been created with pieces in the correct starting positions. 
 }
 
-Board::~Board(){
-    delete[] _board;
-}
-
-inline Piece* Board::_get() const {
-    return _board;
-}
-
-void Board::_reset(){
-    
-}
-
+/// @brief Updates the board with the new location of a piece. 
+/// @param Chess Piece w/ New Location 
 void Board::_update(const Piece&){
 
 }
 
-void Board::_print() const {
+/// @brief  Prints to the standard output a visual representation of the chess board.
+void Board::_printBoard() const {
+    // The function will print out a two-dimensional array of characters, declared here.
+    char char_representation_board[8][8];
+
+    // Initialize the char represention of the board so that by default the space is empty. 
+    for (int i = 0; i < 8; i++){
+        for (int e = 0; e < 8; e++){
+            char_representation_board[i][e] = '#';
+        }
+        
+    }
     
+    // Change the single-dimensional array to two dimensional for output. 
+    for(int i = 0; i < 32; i++){
+        // Get the position of the piece in the array. 
+        int x = _board[i]._getPosition()._horizontial;
+        int y = _board[i]._getPosition()._vertical;
+        char char_representation_piece; 
+
+        // Get the char that will represent the piece. 
+        switch(_board[i]._getID()){
+            case Piece::PIECE::BISHOP:
+                char_representation_piece = 'B';
+                break;
+            case Piece::PIECE::KING:
+                char_representation_piece = 'K';
+                break;
+            case Piece::PIECE::KNIGHT:
+                char_representation_piece = 'N';
+                break;
+            case Piece::PIECE::PAWN:
+                char_representation_piece = 'P';
+                break;
+            case Piece::PIECE::QUEEN:
+                char_representation_piece = 'Q';
+                break;
+            case Piece::PIECE::ROOK:
+                char_representation_piece = 'R';
+                break;
+        }
+        char_representation_board[x][y] = char_representation_piece;
+    }
 }
 
-void Board::_printRaw() const {
+/// @brief Prints to the standard output the state of all pieces in the game. 
+void Board::_printData() const {
     for(int i = 0; i < 32; i++){
         std::cout <<  "ID: " << _board[i]._getID() << " isBlack: " << _board[i]._isBlack() << " Position: X-" << _board[i]._getPosition()._horizontial << " Y-" << _board[i]._getPosition()._horizontial << std::endl;
     }
