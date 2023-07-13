@@ -20,6 +20,10 @@ class Piece {
         inline Position _getPosition() const;
         inline void _setPosition(const Position&);
         // Unique for each piece. 
+        virtual void _setPosition(Position position);
+        virtual Position _getPosition() const;
+        virtual bool _isBlack() const;
+
         inline virtual PIECE _getID() const = 0;
         virtual Position* _getLegalMoves() const = 0;
         virtual Position* _getLegalAttackMoves() const = 0;
