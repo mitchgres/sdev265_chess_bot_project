@@ -10,12 +10,12 @@
 
 Piece::Piece(Position position) : _position(position), _isBlack(false) {}
 
-Position Piece::_getPosition() const {
-    return _position;
-}
-
 void Piece::_setPosition(const Position& newPosition) {
     _position = newPosition;
+}
+
+Position Piece::_getPosition() const {
+    return _position;
 }
 
 bool Piece::_isBlack() const {
