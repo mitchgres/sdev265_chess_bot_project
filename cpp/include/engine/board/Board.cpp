@@ -79,32 +79,61 @@ void Board::_reset(){
     // Board has now been created with pieces in the correct starting positions. 
 }
 
-/// @brief Updates the board with the new location of a piece. 
-/// @param Chess Piece w/ New Location 
-void Board::_update(Position old_position, Position new_position){
-    // Not passed by reference because was getting errors with == operator. 
+void Board::_movePiece(Position source, Position destination) {
+    Piece* piece = _getPiece(source);
+    if (piece != nullptr) {
+        piece->_setPosition(destination);
+    }
+}
 
+Piece* Board::_getPiece(Position position) const {
+    for (int i = 0; i < 32; i++) {
+        if (_board[i]._getPosition() == position) {
+            return &_board[i];
+        }
+    }
+    return nullptr;
+}
+
+bool Board::_isSquareOccupied(Position position) const {
+    return _getPiece(position) != nullptr;
+}
+
+bool Board::_isSquareOccupiedByFriendly(Position position, bool isBlack) const {
+    Piece* piece = _getPiece(position);
+    return piece != nullptr && piece->_isBlack() == isBlack;
+}
+
+bool Board::_isSquareOccupiedByOpponent(Position position, bool isBlack) const {
+    Piece* piece = _getPiece(position);
+    return piece != nullptr && piece->_isBlack() != isBlack;
+}
+
+void Board::_update(Position old_position, Position new_position) {
     Piece current_piece;
     bool isPieceThere;
 
-    // Find the piece with that position. 
-    for (int i = 0; i < 32; i++){
-        if (old_position == _board[i]._getPosition()){
+    // Find the piece with that position.
+    for (int i = 0; i < 32; i++) {
+        if (old_position == _board[i]._getPosition()) {
             current_piece = _board[i];
         }
     }
 
-    // If there was another piece there update it's position to a NULL value since taken. 
-    for (int i = 0; i < 32; i++){
-        if(new_position == _board[i]._getPosition()){
-            // The piece is taken. 
+    // If there was another piece there update its position to a NULL value since taken.
+    for (int i = 0; i < 32; i++) {
+        if (new_position == _board[i]._getPosition()) {
+            // The piece is taken.
             _board[i]._setPosition(Position(-1, -1));
         }
     }
 
-    // Update it's position
+    // Update its position
     current_piece._setPosition(new_position);
 }
+
+
+
 
 /// @brief  Prints to the standard output a visual representation of the chess board.
 void Board::_printBoard() const {
