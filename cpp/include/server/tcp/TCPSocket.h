@@ -1,0 +1,5 @@
+class TCPSocket 
+{
+    public:
+    private:
+};
