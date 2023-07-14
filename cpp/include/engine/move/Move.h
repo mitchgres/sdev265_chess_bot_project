@@ -5,7 +5,7 @@
 class Move 
 {
     public: 
-        Move(const Piece*, const Position&, const Position&);
+        Move(Piece*, const Position&, const Position&);
         inline Piece* _get_piece_ptr() const;
         inline Position _get_old_position() const;
         inline Position _get_new_position() const;
