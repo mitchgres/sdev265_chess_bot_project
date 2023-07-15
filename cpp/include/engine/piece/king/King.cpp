@@ -1,107 +1,91 @@
 #include "King.h"
+#include "../../board/Board.h"
 
-King::King(Position position) : Piece(position) {}
+King::King(const Position& starting_position, bool is_black): Piece(starting_position, is_black)
+{
+// No Implementation. 
+}
 
-Piece::PIECE King::_getID() const {
+Piece::PIECE King::_get_ID() const
+{
     return PIECE::KING;
 }
 
-Position* King::_getLegalMoves() const {
-    std::vector<Position> legalMoves;
+/// @brief All the possible movement the King could make in any position. Does light processing to assure that movements are on a 8x8 board, though no other legal checks are implemented. 
+/// @return Unprocessed Potential Movements. 
+std::list<Position> King::_get_unprocessed_movements() const
+{
+    // The King can move...
+    // (1) Horizontial One Square.
+    // (2) Vertical One Square.
+    // (3) Diagonol One Square.
 
-    // Define the directions in which the King can move
+    std::list<Position> unprocessed_movements;
+
+    // Define the directions in which the King can move.
     int directions[8][2] = {
-        {1, 0}, {-1, 0}, {0, 1}, {0, -1}, // horizontal and vertical moves
-        {1, 1}, {1, -1}, {-1, 1}, {-1, -1} // diagonal moves
+        {1, 0}, 
+        {-1, 0}, 
+        {0, 1}, 
+        {0, -1}, // Horizontial & Vertical Movements
+        {1, 1},
+        {1, -1},
+        {-1, 1},
+        {-1, -1} // Diagonol Movements
     };
 
-    // Iterate over the directions and generate moves
-    for (const auto& direction : directions) {
+    // Use iteration to generate the movements based on the changes (dy/dx) that the King could make.
+    for (const auto &direction : directions)
+    {
         int dx = direction[0];
         int dy = direction[1];
-        int x = _position._horizontial + dx;
-        int y = _position._vertical + dy;
+        int x = _get_position()._horizontial + dx;
+        int y = _get_position()._vertical + dy;
 
-        Position move(x, y);
-        if (_isMoveValid(move)) {
-            legalMoves.push_back(move);
+        // Only some light processing is actually done here and the rest is done later.  
+        // Here we'll just make sure that the move generated is one that can exist on 
+        // and 8x8 board. We'll make sure it's legal later. 
+
+        Position generated_movement(x, y);
+        if (_is_in_bounds(generated_movement))
+        {
+            unprocessed_movements.push_back(generated_movement);
         }
+        // Else: The move was outside of the board 8x8. 
     }
 
-    // Convert the vector to a dynamic array and return
-    Position* movesArray = new Position[legalMoves.size()];
-    std::copy(legalMoves.begin(), legalMoves.end(), movesArray);
-    return movesArray;
+    return unprocessed_movements;
 }
 
-Position* King::_getLegalAttackMoves() const {
-    return _getLegalMoves();
+bool King::_can_take(const Piece* other_piece, Board* board) const
+{
+    // The logic for this is the same as it is for movement. We just want to make sure we aren't in check. 
+    return _can_move(other_piece->_get_position(), board);
 }
 
-Position* King::_getAllLegalMoves() const {
-    std::vector<Position> allMoves;
+bool King::_can_move(const Position &position, Board* board) const
+{
+    // CONDITION TO BE CONSIDERED WHEN MOVING...
+    // (1) Does this put the piece in check?
+    return _is_in_check_at(position, board);
+}
 
-    Position* legalMoves = _getLegalMoves();
-    Position* legalAttackMoves = _getLegalAttackMoves();
-
-    // Append legal moves and legal attack moves to allMoves
-    for (int i = 0; legalMoves[i].isValid(); i++) {
-        allMoves.push_back(legalMoves[i]);
+bool King::_is_in_check_at(const Position& position, Board* board) const
+{   // Position is used as the location that th
+    for (Piece* piece: board->_get_all()) // Iterate through all the pieces and see if in the new position any piece can attack
+    {
+        // Have a temporary variables that is passed for seeing if the king object can be taken. 
+        King* moved_king = new King(position, _is_black());
+         if (piece->_can_take(moved_king, board))
+         {
+            delete moved_king; // Regardless of outcome we must delete the dynamic variable. 
+            return true;
+         }
+         else
+         {
+            delete moved_king;
+         }
     }
 
-    for (int i = 0; legalAttackMoves[i].isValid(); i++) {
-        allMoves.push_back(legalAttackMoves[i]);
-    }
-
-    delete[] legalMoves;
-    delete[] legalAttackMoves;
-
-    // Convert the vector to a dynamic array and return
-    Position* allMovesArray = new Position[allMoves.size()];
-    std::copy(allMoves.begin(), allMoves.end(), allMovesArray);
-    return allMovesArray;
-}
-
-bool King::_canTake(const Piece& piece) const {
-    return _isMoveValid(piece._getPosition());
-}
-
-bool King::_canMove(const Position& position) const {
-    return _isMoveValid(position);
-}
-
-Position* King::_getUnprocessedMoves() const {
-    return _getLegalMoves();
-}
-
-Position* King::_getUnprocessedAttackMoves() const {
-    return _getLegalAttackMoves();
-}
-
-Position* King::_processMoves(const Position*& moves) const {
-    return moves;
-}
-
-bool King::_isMoveValid(const Position& position) const {
-    // Check if the move is within the bounds of the board
-    if (position._horizontial < 0 || position._horizontial >= 8 ||
-        position._vertical < 0 || position._vertical >= 8) {
-        return false;
-    }
-
-    // Check if the destination square is occupied by a friendly piece
-    if (_board->isSquareOccupiedByFriendly(position, _isBlack)) {
-        return false;
-    }
-
-    // Calculate the absolute difference in horizontal and vertical positions
-    int dx = abs(position._horizontial - _position._horizontial);
-    int dy = abs(position._vertical - _position._vertical);
-
-    // Check if the move is within the King's movement range
-    if (dx <= 1 && dy <= 1) {
-        return true;
-    }
-
-    return false;
+    return false; // If no piece can take the king in that position then the king won't be in check there. 
 }
