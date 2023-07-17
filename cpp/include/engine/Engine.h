@@ -6,6 +6,9 @@
 
 class Engine {
     public:
+        Engine(int searchDepth);
+
+        void makeAIMove(Board& board);
         // Random -- Moves are randomly selected by the engine. 
         // Simple -- The engine will only take piece if possible. Other than that moves 
         //           are still random.
@@ -29,4 +32,7 @@ class Engine {
         static Move _as_engine_data_types(const std::string&);
     private:
         static LEVEL LEVEL;
+        int _searchDepth;
+        int _minimax(Board& board, int depth, int alpha, int beta, bool maximizingPlayer);
+        Move _findBestMove(Board& board, int depth);
 };
