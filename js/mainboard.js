@@ -32,31 +32,51 @@ var mainConfig =
     dropOffBoard: 'snapback',
     sparePieces: false,
     showNotation: false,
-    height: mainBoardHeight + 'px',
     onDrop: onDrop,
     onDragStart: onDragStart
 }
 
 // this is supposed to scale the board with the website size but idk
-var mainBoardHeight = document.querySelector('.board').clientHeight;
 var mainBoard = ChessBoard('board-object', mainConfig);
 
 // more fucking scaling shit idk how this works
 function resizeBoard()
 {
-    var boardHeight = document.querySelector('.board').clientHeight;
-    mainConfig.height = boardHeight + 'px';
+    var boardContainer = document.querySelector('.board');
+    var boardHeight = boardContainer.clientHeight;
+    var boardWidth = boardContainer.clientWidth - 80;
 
+    // set the new width and height on the board itself
+    var boardElement = document.getElementById('board-object');
+    boardElement.style.height = boardHeight + 'px';
+    boardElement.style.width = boardWidth + 'px';
+    console.log("div: " + boardHeight);
+    console.log("board: " + boardElement.style.height);
+    
     mainBoard.resize();
 }
 
-debug_shouldResize = true;
+var debug_shouldResize = true;
 
 if (debug_shouldResize)
 {
     window.addEventListener('resize', resizeBoard);
     window.addEventListener('load', resizeBoard);
 }
+
+resizeBoard();
+
+const boardContainer = document.querySelector('.board');
+const resizeObserver = new ResizeObserver(entries => {
+  for (let entry of entries) {
+    const {width, height} = entry.contentRect;
+    var boardElement = document.getElementById('board-object');
+    boardElement.style.height = height + 'px';
+    boardElement.style.width = width + 'px';
+    mainBoard.resize();
+  }
+});
+resizeObserver.observe(boardContainer);
 
 
 // buttons
@@ -73,3 +93,15 @@ function clearBoardButton()
 document.getElementById('setButton').addEventListener('click', setBoardButton);
 document.getElementById('clearButton').addEventListener('click', clearBoardButton);
 
+// api
+function get() {
+    axios.get('https://api.example.com/home')
+        .then(response => {
+            // handle response data
+            console.log(response.data);
+        })
+        .catch(error => {
+            // handle error
+            console.error(error);
+        })
+}
