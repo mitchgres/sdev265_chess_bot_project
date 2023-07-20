@@ -40,7 +40,7 @@ var mainConfig =
 var mainBoard = ChessBoard('board-object', mainConfig);
 
 // more fucking scaling shit idk how this works
-function resizeBoard()
+/* function resizeBoard()
 {
     var boardContainer = document.querySelector('.board');
     var boardHeight = boardContainer.clientHeight;
@@ -76,8 +76,12 @@ const resizeObserver = new ResizeObserver(entries => {
     mainBoard.resize();
   }
 });
-resizeObserver.observe(boardContainer);
+resizeObserver.observe(boardContainer); */
 
+window.addEventListener('resize', function() {
+    var gameWidth = document.querySelector('.game').clientWidth;
+    console.log(gameWidth + "px");
+})
 
 // buttons
 function setBoardButton()

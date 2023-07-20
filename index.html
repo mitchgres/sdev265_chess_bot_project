@@ -15,24 +15,35 @@
     <div class="container">
         <div class="item game">
             <div class="item board">
-                <div id="board-object" style="width: 400px;"></div>
+                <div id="board-object""></div>
             </div>
-            <button id="setButton" class="button">Start</button>
-            <button id="clearButton" class="button">Clear</button>
+            <div class="buttons">
+                <button id="setButton" class="button">Start</button>
+                <button id="clearButton" class="button">Clear</button>
+            </div>
+            
             
         </div>
         <div class="item info">
-            <div class="item history history-white">white history
-
+            <div class="item info-tab history-white">
+                <header style="font-family:'Segoe UI', sans-serif; font-size: 20px; padding: 10px"><strong>WHITE</strong></header>
+                
             </div>
-            <div class="item history history-black">black history
-
+            <div class="item info-tab history-black">
+                <header style="font-family:'Segoe UI', sans-serif; font-size: 20px; padding: 10px"><strong>BLACK</strong></header>
             </div>
-            <div class="item log">log</div>
+            <div class="item info-tab log">
+                <header style="font-family:'Segoe UI', sans-serif; font-size: 20px; padding: 10px"><strong>LOG</strong></header>
+                <div id="chatContainer">
+                    <div id="log"></div>
+                    <input type="text" id="messageInput" placeholder="Type your message..."/>
+                </div>
+            </div>
         </div>
     </div>
     
     <script type="module" src="js/mainboard.js"></script>
+    <script src="js/log.js"></script>
     
 </body>
 </html>

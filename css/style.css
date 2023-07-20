@@ -35,7 +35,6 @@ body {
     width: 150px;
     height: 150px;
     padding: 1em;
-    font-weight: 700;
     background-color: var(--clr-main);
     color: var(--clr-light);
     text-align: center;
@@ -43,63 +42,154 @@ body {
     border-radius: 10px;
 }
 
-.container {
-    display: flex;
-    justify-content: space-evenly;
-    gap: 1em;
+@media (min-width: 945px)
+{
+    .container {
+        display: flex;
+        justify-content: space-evenly;
+        gap: 1em;
+    }
+    .game {
+        grid-template-columns: 75% 25%;
+        min-width: 560px;
+        max-width: 700px;
+        width: 50%;
+    }
+}
+
+@media (max-width: 945px) {
+    .container {
+        display: block;
+        height: 100%;
+    }
+    .game {
+        min-width: 475px;
+        width: 100%;
+    }
+    .info {
+        min-width: 450px;
+        border: 0;
+    }
 }
 
 .game {
     display: grid;
-    flex-grow: 1;
+    
     height: 100%;
     background-color: var(--clr-dark);
 }
 
-.board {
-    height: 100%;
-    width: 100%;
-    border: 0;
-    max-height: 65%;
-    justify-content: center;
+@media (min-width: 1297px)
+{
+    .info-tab {
+        height: 100%;
+    }
+    .history-black, .history-white {
+        max-width: 200px;
+        padding: 0;
+    }
+    .log {
+        padding: 0;
+        padding-left: 10px;
+    }
 }
 
-#board-object {
-    height: 85%;
-    width: 85%;
-    max-height: 85%;
+@media (max-width: 1297px) {
+    .info {
+        flex-wrap: wrap;
+    }
+    .info-tab {
+        height: 50%;
+        padding: 0;
+    }
+    
 }
 
-.button {
-    max-height: 50px;
-    max-width: 125px;
+@media (max-width: 1223px)
+{
+    .info {
+        flex-direction: column;
+    }
+    .info-tab {
+        width: 100%;
+        padding: 0;
+    }
+    .log {
+        height: 50vh;
+    }
+    .history-white, .history-black {
+        height: 50vh;
+    }
 }
 
 .info {
     display: flex;
     flex-grow: 1;
     height: 100%;
-    justify-content: space-evenly;
     padding: 0;
     flex-wrap: wrap;
-    background-color: var(--clr-dark);
+    background-color: var(--clr-main);
 }
 
-.history {
-    display: flex;
-    flex-grow: 1;
-    background-color: var(--clr-accent);
-    border: 5px solid var(--clr-accent);
+.info-tab {
+    
+    background-color: var(--clr-main);
+    border: 5px solid var(--clr-main);
+    flex: 1;
+    min-width: 200px;
     border-radius: 0;
-    height: 50%;
-    max-width: 300px;
+    overflow: auto;
 }
 
 .log {
-    display: flex;
-    flex-grow: 1;
-    min-width: 250px;
-    border: 5px solid var(--clr-accent);
-    border-radius: 0;
-    height: 50%;
+    background-color: var(--clr-accent);
+    border: 0;
+    
+}
+
+#chatContainer {
+    width: 100%;
+    height: 93%;
+}
+
+#log {
+    height: 93%;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    
+}
+
+#messageInput {
+    width: 100%;
+    height: 7%;
+}
+
+.chat {
+    padding: 5px;
+    margin-bottom: 3px;
+    background-color: var(--clr-main);
+    white-space: pre-wrap;
+    line-height: 16px;
+}
+
+.board {
+    height: 0px;
+    width: 0px;
+    border: 0;
+    padding: 0;
+    background-color: var(--clr-dark);
+}
+
+#board-object {
+    width: 400px;
+}
+
+.buttons {
+    grid-column-start: 1;
+    justify-content: center;
+}
+
+.button {
+    max-height: 50px;
+    max-width: 125px;
 }
