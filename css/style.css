@@ -1,72 +1,240 @@
-html
-{
-    background-color:#3c2f2f;
+:root {
+    --clr-dark: #3c2f2f;
+    --clr-accent: #b68863;
+    --clr-main: #8f5c4d;
+    --clr-light: #f0dab7;
 }
 
-.container
-{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    height: 80%;
-    min-height: 300px;
-    margin: 20px;
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
 
-.chess-window
-{
+body {
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    word-spacing: 1.4px;
+    background-color: var(--clr-dark);
+    color: var(--clr-light);
     display: flex;
     justify-content: center;
     align-items: center;
-    flex: 2.5;
-    background-color: #8f5c4d;
+    height: 100vh;
+}
+
+.container {
+    width: 98%;
+    height: 98%;
+    margin: 0 auto;
+    /* border: 10px solid var(--clr-light); */
+}
+
+.item {
+    width: 150px;
+    height: 150px;
+    padding: 1em;
+    background-color: var(--clr-main);
+    color: var(--clr-light);
+    text-align: center;
+    border: 10px solid var(--clr-accent);
     border-radius: 10px;
+}
+
+@media (min-width: 945px)
+{
+    .container {
+        display: flex;
+        justify-content: space-evenly;
+        gap: 1em;
+    }
+    .game {
+        grid-template-columns: 75% 25%;
+        grid-template-rows: 45% 55%;
+        min-width: 580px;
+        max-width: 700px;
+        width: 50%;
+    }
+}
+
+@media (max-width: 945px) {
+    .container {
+        display: block;
+        height: 100%;
+    }
+    .game {
+        min-width: 475px;
+        width: 100%;
+    }
+    .info {
+        min-width: 450px;
+        border: 0;
+    }
+}
+
+.game {
+    display: grid;
+    
+    height: 100%;
+    background-color: var(--clr-dark);
+}
+
+@media (min-width: 1297px)
+{
+    .info-tab {
+        height: 100%;
+    }
+    .history-black, .history-white {
+        max-width: 200px;
+        padding: 0;
+    }
+    .log {
+        padding: 0;
+        padding-left: 10px;
+    }
+}
+
+@media (max-width: 1297px) {
+    .info {
+        flex-wrap: wrap;
+    }
+    .info-tab {
+        height: 50%;
+        padding: 0;
+    }
     
 }
 
-.chess-window #mainBoard
+@media (max-width: 1223px)
 {
-    height: 100%;
+    .info {
+        flex-direction: column;
+    }
+    .info-tab {
+        width: 100%;
+        padding: 0;
+    }
+    .log {
+        height: 50%;
+    }
+    .history-white, .history-black {
+        height: 50%;
+    }
 }
 
-.list
-{
+.info {
+    display: flex;
+    flex-grow: 1;
+    height: 100%;
+    padding: 0;
+    flex-wrap: wrap;
+    background-color: var(--clr-main);
+}
+
+.info-tab {
+    
+    background-color: var(--clr-main);
+    border: 5px solid var(--clr-main);
     flex: 1;
     min-width: 200px;
-    background-color: #b68863;
-    border-radius: 10px;
-    margin-left: 20px;
+    border-radius: 0;
+    overflow: auto;
 }
 
-.bottom
-{
-    flex: 1;
-    height: 200px;
-    background-color: #f0dab7;
-    border-radius: 10px;
+.log {
+    background-color: var(--clr-accent);
+    border: 0;
+    
 }
 
-.zoomer
-{
-    transition: transform .2s ease;
+#chatContainer {
+    width: 100%;
+    height: 93%;
 }
 
-.zoomer:hover
-{
-    transform: scale(1.01);
+#log {
+    height: 93%;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    
 }
 
-.interface
-{
-    background-color: #f5f5f5;
+#messageInput {
+    width: 100%;
+    height: 7%;
 }
 
-.flat-button
-{
+.chatBox {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+.playerName {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.chat {
+    padding: 5px;
+    margin-bottom: 3px;
+    background-color: var(--clr-main);
+    white-space: normal;
+    word-wrap: break-word;
+    line-height: 16px;
+}
+
+.board {
+    height: 0px;
+    width: 0px;
+    border: 0;
+    padding: 0;
+    background-color: var(--clr-dark);
+    position: relative;
+    transform: translateX(50%);
+}
+
+#board-object {
+    width: 400px;
+}
+
+.buttons {
+    padding: 15px;
+    grid-column-start: 1;
+    justify-content: center;
+}
+
+.button:hover {
+    background-color: #e0c8a0;
+    transition: 0.2s
+}
+
+.button:active {
+    background-color: #c09d66;
+}
+
+.button {
+    max-height: 50px;
+    max-width: 125px;
     border: none;
     border-radius: 10px;
     font-size: 18px;
     padding: 10px 20px;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+    background-color: var(--clr-light);
+}
 
+.timers {
+    display: flex;
+    flex-direction: column;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#timer1 {
+
+}
+
+#timer2 {
+    margin-top: auto;
 }

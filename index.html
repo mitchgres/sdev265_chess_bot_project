@@ -6,26 +6,51 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/chessboard-1.0.0.min.css">
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
     <script src="js/chessboard-1.0.0.min.js"></script>
     
     <title>Chess Interface</title>
 </head>
 <body>
     <div class="container">
-        <div class="chess-window">
-            <div id="mainboard" style="width: 300px">
+        <div class="item game">
+            <div class="item board">
+                <div id="board-object""></div>
+            </div>
+            <div class="timers">
+                <div id="timer1">00:00</div>
+                <div id="timer2">00:00</div>
+            </div>
+            
+            <div class="buttons">
+                <button id="setButton" class="button">START</button>
+                <button id="clearButton" class="button">CLEAR</button>
+            </div>
+            
+            
+        </div>
+        <div class="item info">
+            <div class="item info-tab history-white">
+                <header style="font-family:'Segoe UI', sans-serif; font-size: 20px; padding: 10px"><strong>WHITE</strong></header>
                 
             </div>
+            <div class="item info-tab history-black">
+                <header style="font-family:'Segoe UI', sans-serif; font-size: 20px; padding: 10px"><strong>BLACK</strong></header>
+            </div>
+            <div class="item info-tab log">
+                <header style="font-family:'Segoe UI', sans-serif; font-size: 20px; padding: 10px"><strong>LOG</strong></header>
+                <div id="chatContainer">
+                    <div id="log"></div>
+                    <input type="text" id="messageInput" placeholder="Type your message..."/>
+                </div>
+            </div>
         </div>
-        <div class="list zoomer"></div>
     </div>
-    <div class ="container">
-        <div class="bottom zoomer">
-            <button id="setButton" class="interface flat-button">set</button>
-            <button id="clearButton" class="interface flat-button">clear</button>
-        </div>
-    </div>
-    <script src="js/mainboard.js"></script>
+    
+    <script type="module" src="js/mainboard.js"></script>
+    <script src="js/log.js"></script>
+    <script src="js/boardpos.js"></script>
+    <script src="js/timer.js"></script>
     
 </body>
 </html>
