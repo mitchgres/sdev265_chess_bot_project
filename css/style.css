@@ -51,7 +51,8 @@ body {
     }
     .game {
         grid-template-columns: 75% 25%;
-        min-width: 560px;
+        grid-template-rows: 45% 55%;
+        min-width: 580px;
         max-width: 700px;
         width: 50%;
     }
@@ -115,10 +116,10 @@ body {
         padding: 0;
     }
     .log {
-        height: 50vh;
+        height: 50%;
     }
     .history-white, .history-black {
-        height: 50vh;
+        height: 50%;
     }
 }
 
@@ -164,11 +165,23 @@ body {
     height: 7%;
 }
 
+.chatBox {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+.playerName {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
 .chat {
     padding: 5px;
     margin-bottom: 3px;
     background-color: var(--clr-main);
-    white-space: pre-wrap;
+    white-space: normal;
+    word-wrap: break-word;
     line-height: 16px;
 }
 
@@ -178,6 +191,8 @@ body {
     border: 0;
     padding: 0;
     background-color: var(--clr-dark);
+    position: relative;
+    transform: translateX(50%);
 }
 
 #board-object {
@@ -185,11 +200,41 @@ body {
 }
 
 .buttons {
+    padding: 15px;
     grid-column-start: 1;
     justify-content: center;
+}
+
+.button:hover {
+    background-color: #e0c8a0;
+    transition: 0.2s
+}
+
+.button:active {
+    background-color: #c09d66;
 }
 
 .button {
     max-height: 50px;
     max-width: 125px;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    padding: 10px 20px;
+    background-color: var(--clr-light);
+}
+
+.timers {
+    display: flex;
+    flex-direction: column;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#timer1 {
+
+}
+
+#timer2 {
+    margin-top: auto;
 }

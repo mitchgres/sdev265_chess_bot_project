@@ -1,15 +1,17 @@
+// sound cache
+var soundPickup = getSoundGitHub('pickup.ogg');
+var soundPlace = getSoundGitHub('place.ogg');
+
 // sound playback function
-function playSound(fileName)
-{
-    var audio = new Audio('../assets/sound/' + fileName);
-    audio.play();
+function getSoundGitHub(fileName) {
+    var audio = new Audio('https://github.com/mitchgres/sdev265_chess_bot_project/blob/main/assets/sound/' + fileName + '?raw=true');
+    return audio;
 }
 
 // this is called when a piece is picked up
 function onDragStart(source, piece, position, orientation)
 {
-    var audio = new Audio('../assets/sound/pickup.ogg');
-    audio.play();
+    soundPickup.play();
 }
 
 // this is called when a piece is dropped
@@ -18,7 +20,7 @@ function onDrop(source, target, piece, newPos, oldPos, orientation)
     if (target != 'offboard') 
     {
         // this is called when a piece is dropped only on the board
-        playSound('place.ogg');
+        soundPlace.play();
     }
 }
 
@@ -78,10 +80,10 @@ const resizeObserver = new ResizeObserver(entries => {
 });
 resizeObserver.observe(boardContainer); */
 
-window.addEventListener('resize', function() {
+/* window.addEventListener('resize', function() {
     var gameWidth = document.querySelector('.game').clientWidth;
     console.log(gameWidth + "px");
-})
+}) */
 
 // buttons
 function setBoardButton()
