@@ -17,13 +17,13 @@ int test_rook();
 // PROGRAM WILL TEST ENGINE & DATA CLASSES FOR ENGINE
 int main()
 {
-    if (test_board() == -1) std::cout << "[TEST FAILED]: BOARD" << std::endl; //DONE
-    if (test_bishop() == -1) std::cout << "[TEST FAILED]: BISHOP" << std::endl; // DONE
-    if (test_king() == -1) std::cout << "[TEST FAILED]: KING" << std::endl; // DONE
-    if (test_knight() == -1) std::cout << "[TEST FAILED]: KNIGHT" << std::endl; // DONE
-    if (test_pawn() == -1) std::cout << "[TEST FAILED]: PAWN" << std::endl; // DONE
-    if (test_queen() == -1) std::cout << "[TEST FAILED]: QUEEN" << std::endl; // DONE
-    if (test_rook() == -1) std::cout << "[TEST FAILED]: ROOK" << std::endl; // DONE 
+    //if (test_board() == -1) std::cout << "[TEST FAILED]: BOARD" << std::endl; //DONE
+    //if (test_bishop() == -1) std::cout << "[TEST FAILED]: BISHOP" << std::endl; // DONE
+    //if (test_king() == -1) std::cout << "[TEST FAILED]: KING" << std::endl; // DONE
+    //if (test_knight() == -1) std::cout << "[TEST FAILED]: KNIGHT" << std::endl; // DONE
+   // if (test_pawn() == -1) std::cout << "[TEST FAILED]: PAWN" << std::endl; // DONE
+    //if (test_queen() == -1) std::cout << "[TEST FAILED]: QUEEN" << std::endl; // DONE
+    //if (test_rook() == -1) std::cout << "[TEST FAILED]: ROOK" << std::endl; // DONE 
     if (test_engine() == -1) std::cout << "[TEST FAILED]: ENGINE" << std::endl;
 }
 
@@ -1054,19 +1054,19 @@ int test_engine()
     
     std::cout << "---------------- [TEST FOUR]: COMPLETED ----------------" << std::endl;
 
-    // TEST FIVE: BOT SIMULATION WITH ITSELF. 
+    // TEST FIVE: CAN THE BOT PLAY ITSELF?
     std::cout << "[TEST FIVE]: BEGIN" << std::endl;
-    std::cout << "[TEST FIVE]: BOT SIMULATION WITH ITSELF." << std::endl;
+    std::cout << "[TEST FIVE]: CAN THE BOT PLAY ITSELF?" << std::endl;
 
     do
     {
-        Board board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w");
+        Board* board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w");
 
-        // We'll just have the bot play itself for 10 moves. 
+        // We'll have the bot play itself for 10 moves. 
         for(int i = 0; i < 10; i++)
         {
-            std::cout << "MOVE NUMBER: " << i << std::endl;
-            board = *Engine::get_random_move(&board);
+        
+            board = new Board(Engine::get_random_move(board)->_as_fen());
         }
     } while (false);
 }

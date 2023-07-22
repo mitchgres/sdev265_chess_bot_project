@@ -105,6 +105,14 @@ Board::Board(const std::string& fen_notation_input) // FEN Notation is the input
         {
             case ' ': // We have reached the end of the FEN that we care about.
                 break_loop = true;
+                if (fen_notation_input.find('w') != std::string::npos) // If the string contains w then it's white's turn.
+                {
+                    is_black_turn = false;
+                }
+                else
+                {
+                    is_black_turn = true;
+                }
                 break;
             case '/': // We have reached the end of the row, move up. 
                 current_iteration_position._horizontial = 0;
@@ -165,8 +173,6 @@ Board::Board(const std::string& fen_notation_input) // FEN Notation is the input
         }
         if (break_loop)
         {
-            if ('w' == letter) is_black_turn = false;
-            else is_black_turn = true;
             break;
         }
     }

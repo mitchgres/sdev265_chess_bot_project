@@ -17,7 +17,8 @@ Board* Engine::get_random_move(Board* board)
 {
 
     bool is_black_turn = board->_is_black_turn();
-    std::list<Piece*> get_all_friendly_pieces = board->_get_all_opposing_pieces(is_black_turn); // This will instead of getting the opposing get all friendly. 
+    std::cout << "[INFO]: Is Black Turn: " << is_black_turn << std::endl;
+    std::list<Piece*> get_all_friendly_pieces = board->_get_all_opposing_pieces(!is_black_turn); // This will instead of getting the opposing get all friendly. 
 
     // We'll ignore the piece if it's null value to reduce computation time. 
     get_all_friendly_pieces.remove_if([](Piece* piece) { return piece->_get_position() == Position(-1, -1); });
