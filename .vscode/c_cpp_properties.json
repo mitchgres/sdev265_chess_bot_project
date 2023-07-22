@@ -4,7 +4,8 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/cpp/include/engine/position"
+                "${workspaceFolder}/cpp/include/engine/position",
+                "${workspaceFolder}/cpp/include/engine"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/g++",

@@ -4,19 +4,11 @@
 #include "../Piece.h"
 
 class Knight : public Piece {
-public:
-    Knight(Position);
-    PIECE _getID() const override;
-    Position* _getLegalMoves() const override;
-    Position* _getLegalAttackMoves() const override;
-    Position* _getAllLegalMoves() const override;
-
-private:
-    bool _canTake(const Piece&) const override;
-    bool _canMove(const Position&) const override;
-    Position* _getUnprocessedMoves() const override;
-    Position* _getUnprocessedAttackMoves() const override;
-    Position* _processMoves(const Position*&) const override;
+    public:
+        virtual PIECE _get_ID() const override;
+        Knight(const Position starting_position, bool is_black);
+    private:
+        virtual void update_movements_and_attacks(Board* board) override;
 };
 
 #endif

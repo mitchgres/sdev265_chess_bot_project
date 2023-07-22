@@ -1,130 +1,79 @@
-#include "Pawn.h"
-#include "../Piece.h"
+#include <list>
 
-Piece::PIECE Pawn::_getID() const {
-    return Piece::PIECE::PAWN;
+#include "Pawn.h"
+
+// Implementation of construction is difference for Pawn since because of En Passant condition we must keep the last recorded position of the Pawn.
+Pawn::Pawn(const Position starting_position, bool is_black):  Piece(starting_position, is_black)
+{
+    Position null_position(-1, -1); // Set the initial position to the NULL position also used to determine whether a piece is off the board. 
+    previous_position = null_position;
 }
 
-Position* Pawn::_getLegalMoves() const {
-    std::vector<Position> legalMoves;
+Piece::PIECE Pawn::_get_ID() const { return Piece::PIECE::PAWN; }
 
-    // Determine the direction of movement based on the pawns color
-    int direction = (_isBlack) ? 1 : -1;
+void Pawn::update_movements_and_attacks(Board* board)
+{
+    // Black/White Conversion Constant
+    int BLACK_WHITE_CONVERSION_PRODUCT = (_is_black()) ? (-1) : (1); // Black moves down the board (-1) and white moves up (1).
+    int EN_PASSANT_PREVIOUS_MOVE_CRITEA = (_is_black()) ? (1) : (6);
+    int BLACK_WHITE_PAWN_STARTING_RANK = (_is_black()) ? (6) : (1);
 
-    // Check the square in front of the pawn
-    Position forwardMove(_position._horizontial, _position._vertical + direction);
-    if (_isMovePossible(forwardMove) && !_board->isSquareOccupied(forwardMove)) {
-        legalMoves.push_back(forwardMove);
+    // First. We'll do movement...
+    Position single_jump_up (_get_position()._horizontial, _get_position()._vertical + BLACK_WHITE_CONVERSION_PRODUCT);
+    Position double_jump_up (_get_position()._horizontial, _get_position()._vertical + (2 * BLACK_WHITE_CONVERSION_PRODUCT));
 
-        // Check if it's the pawns first move and add the double forward move if possible
-        if ((_isBlack && _position._vertical == 1) || (!_isBlack && _position._vertical == 6)) {
-            Position doubleForwardMove(_position._horizontial, _position._vertical + (2 * direction));
-            if (!_board->isSquareOccupied(doubleForwardMove)) {
-                legalMoves.push_back(doubleForwardMove);
+    if (is_movement_valid(single_jump_up, board)){ all_possible_movements.push_back(single_jump_up); }
+
+    if (is_movement_valid(double_jump_up, board) && _get_position()._vertical  == BLACK_WHITE_PAWN_STARTING_RANK){ all_possible_movements.push_back(double_jump_up); }
+
+    // Next. We'll do attacks...
+    Position left_capture_position(_get_position()._horizontial - 1, _get_position()._vertical + BLACK_WHITE_CONVERSION_PRODUCT);
+    Position right_capture_position(_get_position()._horizontial + 1, _get_position()._vertical + BLACK_WHITE_CONVERSION_PRODUCT);
+
+    // First in this step we'll need to see if there is a piece that can be taken regular. 
+    if (is_attack_valid(left_capture_position, board)) all_possible_attacks.push_back(left_capture_position);
+    if (is_attack_valid(right_capture_position, board)) all_possible_attacks.push_back(right_capture_position);
+
+    // Now let's check for En Passant. 
+    
+    // Check the left side for En Passant.
+    left_capture_position._vertical + BLACK_WHITE_CONVERSION_PRODUCT;
+    right_capture_position._vertical + BLACK_WHITE_CONVERSION_PRODUCT;
+
+    if (board->get_piece_at(left_capture_position) != nullptr)
+    {
+        if (board->get_piece_at(left_capture_position)->_get_ID() == PAWN)
+        {
+            if (board->get_piece_at(left_capture_position)->_get_ID() == PAWN)
+            {
+                // We know it's a pawn so let's cast it to one so that we can use Pawn-specific method for determination if it's last move was from starting rank.
+                Pawn* other_pawn = static_cast<Pawn*>(board->get_piece_at(left_capture_position));
+                if (other_pawn->_get_previous_position()->_vertical == EN_PASSANT_PREVIOUS_MOVE_CRITEA){ all_possible_attacks.push_back(left_capture_position); } 
             }
         }
     }
 
-    // Check diagonal captures
-    Position captureMove1(_position._horizontial - 1, _position._vertical + direction);
-    Position captureMove2(_position._horizontial + 1, _position._vertical + direction);
-    if (_isCapturePossible(captureMove1)) {
-        legalMoves.push_back(captureMove1);
+    // Now let's check the right side.
+    if (board->get_piece_at(right_capture_position) != nullptr)
+    {
+        if (board->get_piece_at(right_capture_position)->_get_ID() == PAWN)
+        {
+            // We know it's a pawn so let's cast it to one so that we can use Pawn-specific method for determination if it's last move was from starting rank.
+            Pawn* other_pawn = static_cast<Pawn*>(board->get_piece_at(right_capture_position));
+            if (other_pawn->_get_previous_position()->_vertical == EN_PASSANT_PREVIOUS_MOVE_CRITEA){ all_possible_attacks.push_back(right_capture_position); } 
+        }
     }
-    if (_isCapturePossible(captureMove2)) {
-        legalMoves.push_back(captureMove2);
-    }
-
-    // Convert the vector to a dynamic array and return
-    Position* movesArray = new Position[legalMoves.size()];
-    std::copy(legalMoves.begin(), legalMoves.end(), movesArray);
-    return movesArray;
 }
 
-Position* Pawn::_getLegalAttackMoves() const {
-    std::vector<Position> legalAttackMoves;
-
-    // Determine the direction of movement based on the pawns color
-    int direction = (_isBlack) ? 1 : -1;
-
-    // Check diagonal captures
-    Position captureMove1(_position._horizontial - 1, _position._vertical + direction);
-    Position captureMove2(_position._horizontial + 1, _position._vertical + direction);
-    if (_isCapturePossible(captureMove1)) {
-        legalAttackMoves.push_back(captureMove1);
-    }
-    if (_isCapturePossible(captureMove2)) {
-        legalAttackMoves.push_back(captureMove2);
-    }
-
-    // Convert the vector to a dynamic array and return
-    Position* movesArray = new Position[legalAttackMoves.size()];
-    std::copy(legalAttackMoves.begin(), legalAttackMoves.end(), movesArray);
-    return movesArray;
+void Pawn::_set_position(const Position new_position)
+{
+    // We set the current position as the previous and then update the position to the new one. 
+    previous_position = _get_position();
+    Piece::_set_position(new_position);
 }
 
-Position* Pawn::_getAllLegalMoves() const {
-    std::vector<Position> allMoves;
 
-    Position* legalMoves = _getLegalMoves();
-    Position* legalAttackMoves = _getLegalAttackMoves();
-
-    // Append legal moves and legal attack moves to allMoves
-    for (int i = 0; legalMoves[i].isValid(); i++) {
-        allMoves.push_back(legalMoves[i]);
-    }
-
-    for (int i = 0; legalAttackMoves[i].isValid(); i++) {
-        allMoves.push_back(legalAttackMoves[i]);
-    }
-
-    delete[] legalMoves;
-    delete[] legalAttackMoves;
-
-    // Convert the vector to a dynamic array and return
-    Position* allMovesArray = new Position[allMoves.size()];
-    std::copy(allMoves.begin(), allMoves.end(), allMovesArray);
-    return allMovesArray;
-}
-
-bool Pawn::_isCapturePossible(const Position& position) const {
-    // Check if the move is within the bounds of the board
-    if (position._horizontial < 0 || position._horizontial >= 8 ||
-        position._vertical < 0 || position._vertical >= 8) {
-        return false;  // Move is outside the board
-    }
-
-    // Check if the destination square is occupied by an opponent's piece
-    if (_board->isSquareOccupiedByOpponent(position, _isBlack)) {
-        return true;
-    }
-
-    return false;
-}
-
-bool Pawn::_isMovePossible(const Position& position) const {
-    // Check if the move is within the bounds of the board
-    if (position._horizontial < 0 || position._horizontial >= 8 ||
-        position._vertical < 0 || position._vertical >= 8) {
-        return false;  // Move is outside the board
-    }
-
-    // Check if the destination square is occupied by any piece
-    if (_board->isSquareOccupied(position)) {
-        return false;
-    }
-
-    return true;
-}
-
-Position* Pawn::_getUnprocessedMoves() const {
-    return _getLegalMoves();
-}
-
-Position* Pawn::_getUnprocessedAttackMoves() const {
-    return _getLegalAttackMoves();
-}
-
-Position* Pawn::_processMoves(const Position*& moves) const {
-    return moves;
+const Position* Pawn::_get_previous_position()
+{
+    return &previous_position;
 }

@@ -5,18 +5,17 @@
 
 class Pawn : public Piece {
 public:
-    Pawn(Position);
-    PIECE _getID() const override;
-    Position* _getLegalMoves() const override;
-    Position* _getLegalAttackMoves() const override;
-    Position* _getAllLegalMoves() const override;
+    Pawn(const Position starting_position, bool is_black);
+    ~Pawn();
+    virtual PIECE _get_ID() const override;
+    inline const Position* _get_previous_position();
+    inline void _set_position(Position new_postion) override;
 
 private:
-    bool _canTake(const Piece&) const override;
-    bool _canMove(const Position&) const override;
-    Position* _getUnprocessedMoves() const override;
-    Position* _getUnprocessedAttackMoves() const override;
-    Position* _processMoves(const Position*&) const override;
+    Position previous_position;
+
+    virtual void update_movements_and_attacks(Board* board) override;
 };
+
 
 #endif

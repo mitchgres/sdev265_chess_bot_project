@@ -1,91 +1,166 @@
+#include <stdio.h>
+#include <string.h>
+
 #include "King.h"
-#include "../../board/Board.h"
 
-King::King(const Position& starting_position, bool is_black): Piece(starting_position, is_black)
+Piece::PIECE King::_get_ID() const { return Piece::PIECE::KING; }
+
+void King::update_movements_and_attacks(Board *board)
 {
-// No Implementation. 
-}
+    // The actual implementation here goes counter-clockwise from the move right in-front of the King.
+    Position top_movement(
+        _get_position()._horizontial,
+        _get_position()._vertical + 1);
 
-Piece::PIECE King::_get_ID() const
-{
-    return PIECE::KING;
-}
+    Position top_left_movement(
+        _get_position()._horizontial - 1,
+        _get_position()._vertical + 1);
 
-/// @brief All the possible movement the King could make in any position. Does light processing to assure that movements are on a 8x8 board, though no other legal checks are implemented. 
-/// @return Unprocessed Potential Movements. 
-std::list<Position> King::_get_unprocessed_movements() const
-{
-    // The King can move...
-    // (1) Horizontial One Square.
-    // (2) Vertical One Square.
-    // (3) Diagonol One Square.
+    Position middle_left_movement(
+        _get_position()._horizontial - 1,
+        _get_position()._vertical);
 
-    std::list<Position> unprocessed_movements;
+    Position bottom_left_movement(
+        _get_position()._horizontial - 1,
+        _get_position()._vertical - 1);
 
-    // Define the directions in which the King can move.
-    int directions[8][2] = {
-        {1, 0}, 
-        {-1, 0}, 
-        {0, 1}, 
-        {0, -1}, // Horizontial & Vertical Movements
-        {1, 1},
-        {1, -1},
-        {-1, 1},
-        {-1, -1} // Diagonol Movements
-    };
+    Position bottom_movement(
+        _get_position()._horizontial,
+        _get_position()._vertical - 1);
 
-    // Use iteration to generate the movements based on the changes (dy/dx) that the King could make.
-    for (const auto &direction : directions)
+    Position bottom_right_movement(
+        _get_position()._horizontial + 1,
+        _get_position()._vertical - 1);
+
+    Position middle_right_movement(
+        _get_position()._horizontial + 1,
+        _get_position()._vertical);
+
+    Position top_right_movement(
+        _get_position()._horizontial + 1,
+        _get_position()._vertical + 1);
+
+    // First we'll check for movements.
+    if (is_movement_valid(top_movement, board))
+        all_possible_movements.push_back(top_movement);
+    if (is_movement_valid(top_left_movement, board))
+        all_possible_movements.push_back(top_left_movement);
+    if (is_movement_valid(middle_left_movement, board))
+        all_possible_movements.push_back(middle_left_movement);
+    if (is_movement_valid(bottom_left_movement, board))
+        all_possible_movements.push_back(bottom_left_movement);
+    if (is_movement_valid(bottom_movement, board))
+        all_possible_movements.push_back(bottom_movement);
+    if (is_movement_valid(bottom_right_movement, board))
+        all_possible_movements.push_back(bottom_right_movement);
+    if (is_movement_valid(middle_right_movement, board))
+        all_possible_movements.push_back(middle_right_movement);
+    if (is_movement_valid(top_right_movement, board))
+        all_possible_movements.push_back(top_right_movement);
+    // All generated movements added.
+
+    // Then we'll check for attacks.
+    if (is_attack_valid(top_movement, board))
+        all_possible_attacks.push_back(top_movement);
+    if (is_attack_valid(top_left_movement, board))
+        all_possible_attacks.push_back(top_left_movement);
+    if (is_attack_valid(middle_left_movement, board))
+        all_possible_attacks.push_back(middle_left_movement);
+    if (is_attack_valid(bottom_left_movement, board))
+        all_possible_attacks.push_back(bottom_left_movement);
+    if (is_attack_valid(bottom_movement, board))
+        all_possible_attacks.push_back(bottom_movement);
+    if (is_attack_valid(bottom_right_movement, board))
+        all_possible_attacks.push_back(bottom_right_movement);
+    if (is_attack_valid(middle_right_movement, board))
+        all_possible_attacks.push_back(middle_right_movement);
+    if (is_attack_valid(top_right_movement, board))
+        all_possible_attacks.push_back(top_right_movement);
+
+    // I think this is the most inefficent part of the program, but needed. We need to check whether the king is in check when you move to a new place.
+    // This involves going through all the movements and deleting the move from the list if it puts the king in check.
+
+    std::list<Position> all_movements_and_attacks;
+    all_movements_and_attacks = all_possible_movements;
+
+    for (Position position : all_possible_attacks)
     {
-        int dx = direction[0];
-        int dy = direction[1];
-        int x = _get_position()._horizontial + dx;
-        int y = _get_position()._vertical + dy;
+        all_movements_and_attacks.push_back(position);
+    }
 
-        // Only some light processing is actually done here and the rest is done later.  
-        // Here we'll just make sure that the move generated is one that can exist on 
-        // and 8x8 board. We'll make sure it's legal later. 
+    // Now we'll implement it so the king cannot move or capture into a position where another piece can attack it.
 
-        Position generated_movement(x, y);
-        if (_is_in_bounds(generated_movement))
+    std::list<Piece *> all_opposing_pieces = board->_get_all_opposing_pieces(_is_black());
+    for (Position position : all_movements_and_attacks)
+    {
+        for (Piece *enemy_piece : all_opposing_pieces)
         {
-            unprocessed_movements.push_back(generated_movement);
+            // We'll need to check if the enemy piece is a king through an if-else statement and check if the two kings are close to each other. 
+            // If we process it normally then we get infinite recursion.
+            if (enemy_piece->_get_ID() == Piece::PIECE::KING)
+            {
+                // We'll need to check if the generated movements would generate a movement that would put the king next to the other king. 
+                // If it does then we'll need to remove it from the list.
+                if (position._horizontial == enemy_piece->_get_position()._horizontial + 1 && position._vertical == enemy_piece->_get_position()._vertical + 1)
+                {
+                    all_possible_movements.remove(position);
+                }
+                else if (position._horizontial == enemy_piece->_get_position()._horizontial + 1 && position._vertical == enemy_piece->_get_position()._vertical)
+                {
+                    all_possible_movements.remove(position);
+                }
+                else if (position._horizontial == enemy_piece->_get_position()._horizontial + 1 && position._vertical == enemy_piece->_get_position()._vertical - 1)
+                {
+                    all_possible_movements.remove(position);
+                }
+                else if (position._horizontial == enemy_piece->_get_position()._horizontial && position._vertical == enemy_piece->_get_position()._vertical + 1)
+                {
+                    all_possible_movements.remove(position);
+                }
+                else if (position._horizontial == enemy_piece->_get_position()._horizontial && position._vertical == enemy_piece->_get_position()._vertical - 1)
+                {
+                    all_possible_movements.remove(position);
+                }
+                else if (position._horizontial == enemy_piece->_get_position()._horizontial - 1 && position._vertical == enemy_piece->_get_position()._vertical + 1)
+                {
+                    all_possible_movements.remove(position);
+                }
+                else if (position._horizontial == enemy_piece->_get_position()._horizontial - 1 && position._vertical == enemy_piece->_get_position()._vertical)
+                {
+                    all_possible_movements.remove(position);
+                }
+                else if (position._horizontial == enemy_piece->_get_position()._horizontial - 1 && position._vertical == enemy_piece->_get_position()._vertical - 1)
+                {
+                    all_possible_movements.remove(position);
+                }
+                else
+                {
+                    // Do nothing because the king is not next to the other king.
+                }
+            }
+            else 
+            {
+                // We'll need to check if the enemy piece can attack the king. If it can then we'll need to remove it from the list.
+                Board board_copy = board->_get_copy();
+
+                // Now update the board so that the king has moved to the position.
+                Position starting_position = _get_position();
+                board_copy._update(starting_position, position);
+
+                // Now we'll iterate through all the enemy attacks for this board configuration and see if the king is in any of them.
+                for (Position enemy_attack_square: enemy_piece->_get_attacks(&board_copy))
+                {
+                    if (position == enemy_attack_square)
+                    {
+                        if (is_attack_valid(position, board)){ all_possible_attacks.remove(position);}
+                        else if (is_movement_valid(position, board)){ all_possible_movements.remove(position);}
+                    }
+                }
+            }
         }
-        // Else: The move was outside of the board 8x8. 
     }
-
-    return unprocessed_movements;
 }
 
-bool King::_can_take(const Piece* other_piece, Board* board) const
+King::King(const Position position, bool is_black) : Piece(position, is_black)
 {
-    // The logic for this is the same as it is for movement. We just want to make sure we aren't in check. 
-    return _can_move(other_piece->_get_position(), board);
-}
-
-bool King::_can_move(const Position &position, Board* board) const
-{
-    // CONDITION TO BE CONSIDERED WHEN MOVING...
-    // (1) Does this put the piece in check?
-    return _is_in_check_at(position, board);
-}
-
-bool King::_is_in_check_at(const Position& position, Board* board) const
-{   // Position is used as the location that th
-    for (Piece* piece: board->_get_all()) // Iterate through all the pieces and see if in the new position any piece can attack
-    {
-        // Have a temporary variables that is passed for seeing if the king object can be taken. 
-        King* moved_king = new King(position, _is_black());
-         if (piece->_can_take(moved_king, board))
-         {
-            delete moved_king; // Regardless of outcome we must delete the dynamic variable. 
-            return true;
-         }
-         else
-         {
-            delete moved_king;
-         }
-    }
-
-    return false; // If no piece can take the king in that position then the king won't be in check there. 
 }
