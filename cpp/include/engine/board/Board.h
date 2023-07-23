@@ -27,9 +27,9 @@ public:
 
     // TODO: Imlplement these functions.
     bool _is_black_turn() const;
-    bool _is_stalemate(bool _is_black);
-    bool _is_checkmate(bool _is_black);
-    bool _is_king_in_check(bool _is_black);
+    //bool _is_stalemate(bool _is_black);
+    //bool _is_checkmate(bool _is_black);
+    //bool _is_king_in_check(bool _is_black);
 
 private:
     std::list<Piece*> _board;

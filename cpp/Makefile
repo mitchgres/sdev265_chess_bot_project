@@ -73,21 +73,21 @@ test-engine: $(test-exe) $(board-object) $(engine-object) $(piece-object) $(bish
 clean:
 	rm -f a.out $(server-object) $(board-object) $(engine-object) $(piece-object) $(bishop-object) $(king-object) $(knight-object) $(pawn-object) $(queen-object) $(rook-object) $(position-object) test-engine
 
+# Only used to run test to make sure everything is working.
+
 test-and-run-engine:
 	make clean
 	make link-all-engine
 	make test-engine
 	./a.out
 
+# Used if you want to access the engine through sockets. 
+
 link-server: $(server)
 	g++ -c -g $(server)
 
-start-server: $(server-object)
-	g++ $(main-exe) $(server-object) $(board-object) $(engine-object) $(piece-object) $(bishop-object) $(king-object) $(knight-object) $(pawn-object) $(queen-object) $(rook-object) $(position-object)
+start-server: $(server)
+	g++ $(server) $(board-object) $(engine-object) $(piece-object) $(bishop-object) $(king-object) $(knight-object) $(pawn-object) $(queen-object) $(rook-object) $(position-object)
 
 run-server: 
-	make clean
-	make link-all-engine
-	make link-server
-	make start-server
 	./a.out

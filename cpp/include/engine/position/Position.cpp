@@ -10,7 +10,7 @@ Position::Position()
     Position(-1, -1);
 }
 
-bool Position::operator== (const Position& other_position){
+bool Position::operator== (const Position other_position) const {
     // If the horizontial and vertical are the same then the positions are the same.
     if (other_position._horizontial == _horizontial && other_position._vertical == _vertical){
         return true;

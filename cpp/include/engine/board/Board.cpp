@@ -296,17 +296,17 @@ Board Board::_get_copy()
 
 bool Board::_is_black_turn() const { return is_black_turn; }
 
-bool Board::_is_stalemate(bool _is_black) // Is it stalemate for boolean (black or white).
-{
-    // TODO: Implement this function.
-}
+// bool Board::_is_stalemate(bool _is_black) // Is it stalemate for boolean (black or white).
+// {
+//     // TODO: Implement this function.
+// }
 
-bool _is_checkmate(bool _is_black)
-{
-    //TODO: Implement this function.
-}
+// bool _is_checkmate(bool _is_black)
+// {
+//     //TODO: Implement this function.
+// }
 
-bool _is_king_in_check(bool _is_black)
-{
-    //TODO: Implement this function.
-}
+// bool _is_king_in_check(bool _is_black)
+// {
+//     //TODO: Implement this function.
+// }

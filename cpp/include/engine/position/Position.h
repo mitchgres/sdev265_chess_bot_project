@@ -10,7 +10,7 @@ class Position {
 
         Position(short, short);
         Position();
-        bool operator== (const Position&);
+        bool operator== (const Position other_position) const;
 };
 
 #endif // __POSITION_H__

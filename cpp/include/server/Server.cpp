@@ -1,83 +1,119 @@
-#include <netinet/in.h>  
-#include <stdio.h>  
-#include <stdlib.h>  
-#include <string.h>  
-#include <sys/socket.h>  
-#include <unistd.h>  
-#include <boost/algorithm/string.hpp> // For boost::trim
+#include <boost/asio.hpp>
+#include <boost/algorithm/string.hpp>
+#include <iostream>
+#include <string>
+#include <vector>
+#include <sstream>
+#include <algorithm>
 
-#include "../engine/Engine.h"
 #include "../engine/board/Board.h"
-#include "Server.h"
+#include "../engine/Engine.h"
 
-int Server::start(const int PORT, const int MESSAGE_BUFFER_SIZE)
-{
-    int file_descriptor_socket, connected_socket, value_read_from_socket;
-    struct sockaddr_in address;
-    int opt = 1;
-    int address_length = sizeof(address);
-    char buffer[MESSAGE_BUFFER_SIZE] = {0}; // This is the buffer that will be used to store the message that's sent from the client. It should never get bigger than 50
-    // since we're only working with FEN notation.
+namespace asio = boost::asio;
+using tcp = asio::ip::tcp;
 
-    // Created File Descriptor Socket...
-    if ((file_descriptor_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-    {
-        perror("[ERROR]: Socket Creation Failure");
-        exit(EXIT_FAILURE);
+// Custom URL-decode function
+std::string url_decode(const std::string& encoded) {
+    std::string result;
+    char ch;
+    int i, hex;
+    for (i = 0; i < encoded.length(); i++) {
+        if (encoded[i] == '%') {
+            if (sscanf(encoded.substr(i + 1, 2).c_str(), "%x", &hex) != 1) {
+                return "";
+            }
+            ch = static_cast<char>(hex);
+            result += ch;
+            i += 2;
+        } else if (encoded[i] == '+') {
+            result += ' ';
+        } else {
+            result += encoded[i];
+        }
+    }
+    return result;
+}
+
+// Function to parse the FEN notation received in the HTTP request
+std::string parse_fen(const std::string& request_line) {
+    std::vector<std::string> tokens;
+    std::istringstream iss(request_line);
+    std::string token;
+    while (std::getline(iss, token, ' ')) {
+        tokens.push_back(token);
     }
 
-    // Bind Socket on 8080... There shouldn't be much traffic on this port which is why it's used over a more common port like 80.
-    if (setsockopt(file_descriptor_socket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
-    {
-        perror("[ERROR]: Socket Binding Failure");
-        exit(EXIT_FAILURE);
+    if (tokens.size() >= 2) {
+        // The FEN notation is expected to be in the second token
+        std::string fen_notation = tokens[1];
+        // Decode the URL-encoded FEN notation
+        return url_decode(fen_notation);
     }
 
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(PORT);
+    // Return an empty string if the FEN notation is not found
+    return "";
+}
 
-    // Listen to see if the client tries to connect with us...
-    if (listen(file_descriptor_socket, 1) < 0) // There should never be more than one client in this version of application.
-    {
-        perror("[ERROR]: Socket Listening Failure");
-        exit(EXIT_FAILURE);
+// Function to handle incoming HTTP requests
+void handle_request(tcp::socket& socket) {
+    try {
+        asio::streambuf buffer;
+        asio::read_until(socket, buffer, "\r\n");
+
+        // Read the request line from the buffer
+        std::istream request_stream(&buffer);
+        std::string request_line;
+        std::getline(request_stream, request_line);
+
+        // Process only GET requests for this simple example
+        if (request_line.find("GET") != std::string::npos) {
+            // Get the FEN notation from the request
+            std::string fen_notation = parse_fen(request_line);
+            boost::trim(fen_notation);
+            std::cout << "FEN notation: " << fen_notation << std::endl;
+            fen_notation.erase(0, 6);
+            std::cout << "FEN notation: " << fen_notation << std::endl;
+            Board board(fen_notation);
+            std::string fen_responce = Engine::get_random_move(&board)->_as_fen();
+
+            // Send HTTP response headers
+            std::string response = "HTTP/1.1 200 OK\r\n";
+            response += "Content-Type: application/json\r\n";
+            response += "Connection: close\r\n\r\n";
+
+            // Prepare JSON response with the FEN notation
+            std::string json_response = "{\"fen\": \"" + fen_responce  + "\"}";
+
+            // Send the response
+            response += json_response;
+            asio::write(socket, asio::buffer(response));
+
+            // Output the received FEN notation to console
+            std::cout << "Received FEN notation: " << fen_notation << std::endl;
+        }
+
+        // Close the socket after responding to the request
+        socket.close();
+    } catch (std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+}
+
+int main() {
+    try {
+        asio::io_context io_context;
+        tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 8080));
+
+        std::cout << "Server started. Listening on port 8080..." << std::endl;
+
+        while (true) {
+            tcp::socket socket(io_context);
+            acceptor.accept(socket);
+            handle_request(socket);
+        }
+    } catch (std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
     }
 
-    // Accept Connection
-    if ((connected_socket = accept(file_descriptor_socket, (struct sockaddr*)&address, (socklen_t*)&address_length)) < 0)
-    {
-        perror("[ERROR]: Socket Accepting Failure");
-        exit(EXIT_FAILURE);
-    }
-
-    // Read the message from the client.
-    value_read_from_socket = read(connected_socket, buffer, MESSAGE_BUFFER_SIZE);
-    // We'll need to change this into a std::string and then use boost::trim to trim it so it can be read by the engine.
-    std::string message_from_client = buffer;
-    boost::trim(message_from_client);
-
-    // Now let's get the move made by the engine in responce to the message from the client.
-    Board board = Board(message_from_client);
-
-    // Display the fen from client.
-    std::cout << "[INFO]: Client Board: " << message_from_client << std::endl;
-    board._print_board();
-
-    Engine* engine = new Engine();
-    Board* board_with_move = engine->get_random_move(&board);
-    std::string message_to_client = board_with_move->_as_fen();
-
-    // Display the fen to client.
-    std::cout << "[INFO]: Server Board: " << message_to_client << std::endl;
-    board_with_move->_print_board();
-    
-    // Send the message to the client.
-    send(connected_socket, message_to_client.c_str(), strlen(message_to_client.c_str()), 0);
-    std::cout << "[INFO]: Client Responce Has Been Sent." << std::endl;
-
-    // Close & Shutdown.
-    close(connected_socket);
-    shutdown(file_descriptor_socket, SHUT_RDWR);
     return 0;
 }
