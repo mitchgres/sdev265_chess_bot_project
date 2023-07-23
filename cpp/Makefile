@@ -29,7 +29,7 @@ link-board: $(board)
 	g++ -c -g $(board) $(piece) $(position) $(pawn) $(rook) $(knight) $(bishop) $(queen) $(king)
 
 link-engine: $(engine)
-	g++ -c -g $(engine) 
+	g++ -c -O3 -g $(engine) 
 
 link-piece: $(piece)
 	g++ -c -g $(piece) $(position) $(board)

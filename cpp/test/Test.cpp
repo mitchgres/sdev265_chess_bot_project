@@ -3,7 +3,6 @@
 
 #include "../include/engine/board/Board.h"
 #include "../include/engine/Engine.h"
-#include "../include/server/Server.h"
 
 int test_board();
 int test_bishop();
