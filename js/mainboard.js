@@ -22,9 +22,59 @@ function onDrop(source, target, piece, newPos, oldPos, orientation)
         // this is called when a piece is dropped only on the board
         soundPlace.play();
     }
+
+    let fen = ChessBoard.objToFen(newPos);
+    if (ChessBoard.objToFen(newPos) != ChessBoard.objToFen(oldPos)) {
+        handleMove(fen)
+            .then(newFen => {
+                changeBoard(mainBoard, newFen);
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    }
+    
 }
 
+function onMoveEnd(oldPos, newPos) {
+    
+}
 
+function changeBoard(board, fen) {
+    console.log(fen.slice(-2));
+    fen = fen.slice(0, -2);
+    board.position(fen, true);
+}
+
+async function handleMove(fen) {
+    fen = fen + " b";
+    console.log("sent:", fen);
+    const url = `http://127.0.0.1:8080?fen=${encodeURIComponent(fen)}`;
+    try {
+        const response = await call(url);
+        console.log("response:", response);
+        return response;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+async function call(url) {
+    try {
+        const response = await axios.get(url);
+        const data = response.data;
+        return data.fen;
+    } catch (error) {
+        if (error.response) {
+            console.log(error.response.status);
+        } else {
+            console.log(error);
+            console.log(error.message);
+        }
+        throw error;
+    }
+}
 
 // these are the settings used by the mainBoard.
 // settings are defined at https://chessboardjs.com/examples.html#2000
@@ -35,55 +85,11 @@ var mainConfig =
     sparePieces: false,
     showNotation: false,
     onDrop: onDrop,
-    onDragStart: onDragStart
+    onDragStart: onDragStart,
+    onMoveEnd: onMoveEnd
 }
-
 // this is supposed to scale the board with the website size but idk
 var mainBoard = ChessBoard('board-object', mainConfig);
-
-// more fucking scaling shit idk how this works
-/* function resizeBoard()
-{
-    var boardContainer = document.querySelector('.board');
-    var boardHeight = boardContainer.clientHeight;
-    var boardWidth = boardContainer.clientWidth - 80;
-
-    // set the new width and height on the board itself
-    var boardElement = document.getElementById('board-object');
-    boardElement.style.height = boardHeight + 'px';
-    boardElement.style.width = boardWidth + 'px';
-    console.log("div: " + boardHeight);
-    console.log("board: " + boardElement.style.height);
-    
-    mainBoard.resize();
-}
-
-var debug_shouldResize = true;
-
-if (debug_shouldResize)
-{
-    window.addEventListener('resize', resizeBoard);
-    window.addEventListener('load', resizeBoard);
-}
-
-resizeBoard();
-
-const boardContainer = document.querySelector('.board');
-const resizeObserver = new ResizeObserver(entries => {
-  for (let entry of entries) {
-    const {width, height} = entry.contentRect;
-    var boardElement = document.getElementById('board-object');
-    boardElement.style.height = height + 'px';
-    boardElement.style.width = width + 'px';
-    mainBoard.resize();
-  }
-});
-resizeObserver.observe(boardContainer); */
-
-/* window.addEventListener('resize', function() {
-    var gameWidth = document.querySelector('.game').clientWidth;
-    console.log(gameWidth + "px");
-}) */
 
 // buttons
 function setBoardButton()
@@ -98,16 +104,3 @@ function clearBoardButton()
 
 document.getElementById('setButton').addEventListener('click', setBoardButton);
 document.getElementById('clearButton').addEventListener('click', clearBoardButton);
-
-// api
-function get() {
-    axios.get('https://api.example.com/home')
-        .then(response => {
-            // handle response data
-            console.log(response.data);
-        })
-        .catch(error => {
-            // handle error
-            console.error(error);
-        })
-}

@@ -15,7 +15,7 @@ const logDiv = document.querySelector('#log');
 
 window.onload = function() {
     document.querySelector('#messageInput').addEventListener('keypress', function(e) {
-        click.cloneNode().play();
+        soundClick.cloneNode().play();
         let key = e.which || e.keyCode;
         if (key === 13 && !e.shiftKey) { // 'Enter' key without holding 'shift'
             let message = this.value;
@@ -39,7 +39,7 @@ window.onload = function() {
 
                 this.value = '';
                 
-                clack.play();
+                soundClack.play();
             }
         }
     });
