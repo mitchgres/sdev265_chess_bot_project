@@ -1,3 +1,10 @@
+/*
+    !!IMPORTANT INFO!!
+    server is temporarily within this directory, as it's the easiest place to put it lol
+    to run it, call it ("./server.out") from an ubuntu terminal.
+    after the server is online, the frontend should be good to launch (from port 5501, otherwise it won't work lel)
+*/
+
 // sound cache
 var soundPickup = getSoundGitHub('pickup.ogg');
 var soundPlace = getSoundGitHub('place.ogg');
@@ -33,10 +40,6 @@ function onDrop(source, target, piece, newPos, oldPos, orientation)
                 console.log(error);
             })
     }
-    
-}
-
-function onMoveEnd(oldPos, newPos) {
     
 }
 
